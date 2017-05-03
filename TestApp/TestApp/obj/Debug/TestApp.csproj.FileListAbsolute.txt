@@ -1,0 +1,6 @@
+F:\GIT foldery\BIAI-LanguageRecognition\TestApp\TestApp\bin\Debug\TestApp.exe.config
+F:\GIT foldery\BIAI-LanguageRecognition\TestApp\TestApp\bin\Debug\TestApp.exe
+F:\GIT foldery\BIAI-LanguageRecognition\TestApp\TestApp\bin\Debug\TestApp.pdb
+F:\GIT foldery\BIAI-LanguageRecognition\TestApp\TestApp\obj\Debug\TestApp.csprojResolveAssemblyReference.cache
+F:\GIT foldery\BIAI-LanguageRecognition\TestApp\TestApp\obj\Debug\TestApp.exe
+F:\GIT foldery\BIAI-LanguageRecognition\TestApp\TestApp\obj\Debug\TestApp.pdb
