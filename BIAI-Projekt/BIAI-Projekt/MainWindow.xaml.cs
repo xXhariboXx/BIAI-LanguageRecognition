@@ -22,7 +22,7 @@ namespace BIAI_Projekt
     public partial class MainWindow : Window
     {
         FileReader fileReader;
-        
+        NeuralNetworkOperator neuralNetworkOperator;
 
         public MainWindow()
         {
@@ -33,7 +33,7 @@ namespace BIAI_Projekt
         private void Init()
         {
             fileReader = new FileReader();
-            
+            neuralNetworkOperator = new NeuralNetworkOperator();
         }
 
         private async void buttonRun_Click(object sender, RoutedEventArgs e)
@@ -42,6 +42,7 @@ namespace BIAI_Projekt
             fileReader.mainList.Clear();
             fileReader.CreateListOfArrays(fileReader.path);
             textBox.Text = fileReader.PrintListOfArrays(fileReader.mainList);
+            neuralNetworkOperator.run(fileReader.mainList);
         }
     }
 }

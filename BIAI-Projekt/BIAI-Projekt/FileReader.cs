@@ -34,13 +34,15 @@ namespace BIAI_Projekt
                     var txtFiles = Directory.EnumerateFiles(currentDir, "*.txt");
                     foreach (string currentFile in txtFiles)
                     {
-                        double[] percentageArray = new double[28];
+                        double[] percentageArray = new double[29];
                         for (int i = 0; i < percentageArray.Length; i++)
                         {
                             percentageArray[i] = 0;
                         }
                         String language = currentDir.Remove(0, currentDir.Length - 1);
-                        percentageArray[percentageArray.Length - 1] = Convert.ToDouble(language);
+                        //percentageArray[percentageArray.Length - 1] = Convert.ToDouble(language);
+                        ConvertLanguageToTable(language, percentageArray, 2);
+
                         using (streamReader = new StreamReader(currentFile))
                         {
                             String line;
@@ -112,5 +114,23 @@ namespace BIAI_Projekt
             return listToPrint;
         }
 
+        public void ConvertLanguageToTable(string language, double[] percentageArray, int numberOfOutputs)
+        {
+            switch(language.ToUpper())
+            {
+                case "POLISH":
+                    percentageArray[27] = 0;
+                    percentageArray[28] = 1;
+                    break;
+                case "ENGLISH":
+                    percentageArray[27] = 1;
+                    percentageArray[28] = 0;
+                    break;
+                default:
+                    percentageArray[27] = 0;
+                    percentageArray[28] = 0;
+                    break;
+            }
+        }
     }
 }

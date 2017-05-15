@@ -8,9 +8,9 @@ namespace CodingBackProp
       Console.WriteLine("\nBegin neural network back-propagation demo");
 
       int numInput = 27; // number features
-      int numHidden = 3;
-      int numOutput = 5; // number of classes for Y
-      int numRows = 1000;
+      int numHidden = 7;
+      int numOutput = 2; // number of classes for Y
+      int numRows = 100;
       int seed = 1; // gives nice demo
 
       Console.WriteLine("\nGenerating " + numRows +
@@ -24,7 +24,7 @@ namespace CodingBackProp
       Console.WriteLine("\nCreating train (80%) and test (20%) matrices");
       double[][] trainData;
       double[][] testData;
-      SplitTrainTest(allData, 0.80, seed, out trainData, out testData);
+      SplitTrainTest(allData, 0.70, seed, out trainData, out testData);
       Console.WriteLine("Done\n");
 
       Console.WriteLine("Training data:");
@@ -36,7 +36,7 @@ namespace CodingBackProp
         "-" + numOutput + " neural network");
       NeuralNetwork nn = new NeuralNetwork(numInput, numHidden, numOutput);
 
-      int maxEpochs = 1000;
+      int maxEpochs = 2000;
       double learnRate = 0.05;
       double momentum = 0.01;
       Console.WriteLine("\nSetting maxEpochs = " + maxEpochs);
