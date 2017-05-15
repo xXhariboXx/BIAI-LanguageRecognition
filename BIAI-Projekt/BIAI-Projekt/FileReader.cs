@@ -87,13 +87,17 @@ namespace BIAI_Projekt
 
             for (int i = 0; i < array.Length; i++)
             {
-                if (i == array.Length - 2)
+                if (i == array.Length - 3)
                 {
                     arrayString += ("inne - " + array[i] + "\n");
                 }
-                else if (i == array.Length - 1)
+                else if (i == array.Length - 2)
                 {
-                    arrayString += ("jezyk - " + array[i] + "\n");
+                    arrayString += ("jezyk [0]- " + array[i] + "\n");
+                }
+                else if(i == array.Length - 1)
+                {
+                    arrayString += ("jezyk [1]- " + array[i] + "\n");
                 }
                 else
                 {
