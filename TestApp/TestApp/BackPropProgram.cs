@@ -7,9 +7,9 @@ namespace CodingBackProp
     {
       Console.WriteLine("\nBegin neural network back-propagation demo");
 
-      int numInput = 4; // number features
-      int numHidden = 5;
-      int numOutput = 3; // number of classes for Y
+      int numInput = 27; // number features
+      int numHidden = 3;
+      int numOutput = 5; // number of classes for Y
       int numRows = 1000;
       int seed = 1; // gives nice demo
 
