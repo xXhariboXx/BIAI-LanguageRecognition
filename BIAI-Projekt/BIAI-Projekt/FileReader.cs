@@ -34,12 +34,12 @@ namespace BIAI_Projekt
                     var txtFiles = Directory.EnumerateFiles(currentDir, "*.txt");
                     foreach (string currentFile in txtFiles)
                     {
-                        double[] percentageArray = new double[29];
+                        double[] percentageArray = new double[30];
                         for (int i = 0; i < percentageArray.Length; i++)
                         {
                             percentageArray[i] = 0;
                         }
-                        String language = currentDir.Remove(0, currentDir.Length - 1);
+                        String language = currentDir.Remove(0, currentDir.Length - 3);
                         //percentageArray[percentageArray.Length - 1] = Convert.ToDouble(language);
                         ConvertLanguageToTable(language, percentageArray, 2);
 
@@ -53,20 +53,20 @@ namespace BIAI_Projekt
                                 foreach (char c in line)
                                 {
 
-                                    if ((c > 97) && (c < 122))
+                                    if ((c >= 97) && (c <= 122))
                                     {
                                         int i = c - 97;
                                         percentageArray[i]++;
+                                        charAmountInFile++;
                                     }
                                     else if (c > 127)
                                     {
                                         percentageArray[26]++;
+                                        charAmountInFile++;
                                     }
-
-                                    charAmountInFile++;
                                 }
                             }
-                            for (int i = 0; i < percentageArray.Length - 2; i++)
+                            for (int i = 0; i < percentageArray.Length - 3; i++)
                             {
                                 percentageArray[i] = ((percentageArray[i]) / charAmountInFile) * 100;
                             }
@@ -87,17 +87,21 @@ namespace BIAI_Projekt
 
             for (int i = 0; i < array.Length; i++)
             {
-                if (i == array.Length - 3)
+                if (i == array.Length - 4)
                 {
                     arrayString += ("inne - " + array[i] + "\n");
                 }
-                else if (i == array.Length - 2)
+                else if (i == array.Length - 3)
                 {
                     arrayString += ("jezyk [0]- " + array[i] + "\n");
                 }
-                else if(i == array.Length - 1)
+                else if(i == array.Length - 2)
                 {
                     arrayString += ("jezyk [1]- " + array[i] + "\n");
+                }
+                else if (i == array.Length - 1)
+                {
+                    arrayString += ("jezyk [2]- " + array[i] + "\n");
                 }
                 else
                 {
@@ -122,17 +126,25 @@ namespace BIAI_Projekt
         {
             switch(language.ToUpper())
             {
-                case "POLISH":
+                case "POL":
                     percentageArray[27] = 0;
                     percentageArray[28] = 1;
+                    percentageArray[29] = 0;
                     break;
-                case "ENGLISH":
+                case "ENG":
                     percentageArray[27] = 1;
                     percentageArray[28] = 0;
+                    percentageArray[29] = 0;
+                    break;
+                case "FRA":
+                    percentageArray[27] = 0;
+                    percentageArray[28] = 0;
+                    percentageArray[29] = 1;
                     break;
                 default:
                     percentageArray[27] = 0;
                     percentageArray[28] = 0;
+                    percentageArray[29] = 0;
                     break;
             }
         }
