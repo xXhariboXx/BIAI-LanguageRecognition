@@ -14,7 +14,7 @@ namespace BIAI_Projekt
 
             int numInput = 27; // number features
             int numHidden = 7;
-            int numOutput = 2; // number of classes for Y
+            int numOutput = 3; // number of classes for Y
             int numRows = inputVector.Count;
             int seed = 1; // gives nice demo
 
@@ -29,7 +29,7 @@ namespace BIAI_Projekt
             Console.WriteLine("\nCreating train (80%) and test (20%) matrices");
             double[][] trainData;
             double[][] testData;
-            SplitTrainTest(allData, 0.70, seed, out trainData, out testData);
+            SplitTrainTest(allData, 0.8, seed, out trainData, out testData);
             Console.WriteLine("Done\n");
 
             Console.WriteLine("Training data:");
@@ -58,8 +58,8 @@ namespace BIAI_Projekt
             //ShowVector(y, 3, 3, true);
 
             //double trainAcc = nn.Accuracy(trainData);
-            ////Console.WriteLine("\nFinal accuracy on training data = " +
-            //  trainAcc.ToString("F4"));
+            //Console.WriteLine("\nFinal accuracy on training data = " +
+            //trainAcc.ToString("F4"));
 
             double testAcc = nn.Accuracy(testData);
             Console.WriteLine("Final accuracy on test data     = " +

@@ -211,7 +211,7 @@ namespace BIAI_Projekt
             for (int i = 0; i < sequence.Length; ++i)
                 sequence[i] = i;
 
-            int errInterval = maxEpochs / 10; // interval to check error
+            int errInterval = maxEpochs / 100; // interval to check error
             while (epoch < maxEpochs)
             {
                 ++epoch;
