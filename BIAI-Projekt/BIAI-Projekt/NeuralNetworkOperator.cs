@@ -8,6 +8,7 @@ namespace BIAI_Projekt
 {
     class NeuralNetworkOperator
     {
+        public double[] Weights { get; set; }
 
 
         public void run(List<double[]> inputVector)
@@ -51,10 +52,10 @@ namespace BIAI_Projekt
             Console.WriteLine("Setting momentum  = " + momentum.ToString("F2"));
 
             Console.WriteLine("\nStarting training");
-            double[] weights = nn.Train(trainData, maxEpochs, learnRate, momentum);
+            Weights = nn.Train(trainData, maxEpochs, learnRate, momentum);
             Console.WriteLine("Done");
             Console.WriteLine("\nFinal neural network model weights and biases:\n");
-            ShowVector(weights, 2, 10, true);
+            ShowVector(Weights, 2, 10, true);
 
             double testAcc = nn.Accuracy(testData);
             Console.WriteLine("Final accuracy on test data     = " +
@@ -64,7 +65,7 @@ namespace BIAI_Projekt
             Console.ReadLine();
         }
 
-        public static void ShowMatrix(double[][] matrix, int numRows,
+        private void ShowMatrix(double[][] matrix, int numRows,
      int decimals, bool indices)
         {
             int len = matrix.Length.ToString().Length;
@@ -99,7 +100,7 @@ namespace BIAI_Projekt
             Console.WriteLine("\n");
         }
 
-        public static void ShowVector(double[] vector, int decimals,
+        private void ShowVector(double[] vector, int decimals,
           int lineLen, bool newLine)
         {
             for (int i = 0; i < vector.Length; ++i)
@@ -112,7 +113,7 @@ namespace BIAI_Projekt
                 Console.WriteLine("");
         }
 
-        static double[][] MakeAllData(int numInput, int numHidden,
+        private double[][] MakeAllData(int numInput, int numHidden,
           int numOutput, int numRows, int seed, List<double[]> inputVector)
         {
             Random rnd = new Random(seed);
@@ -148,42 +149,10 @@ namespace BIAI_Projekt
                 }
             }
 
-            //for (int r = 0; r < numRows; ++r) // for each row
-            //{
-            //    // generate random inputs
-            //    double[] inputs = new double[numInput];
-            //    for (int i = 0; i < numInput; ++i)
-            //        inputs[i] = 20.0 * rnd.NextDouble() - 10.0; // [-10.0 to -10.0]
-
-            //    // compute outputs
-            //    double[] outputs = gnn.ComputeOutputs(inputs);
-
-            //    // translate outputs to 1-of-N
-            //    double[] oneOfN = new double[numOutput]; // all 0.0
-
-            //    int maxIndex = 0;
-            //    double maxValue = outputs[0];
-            //    for (int i = 0; i < numOutput; ++i)
-            //    {
-            //        if (outputs[i] > maxValue)
-            //        {
-            //            maxIndex = i;
-            //            maxValue = outputs[i];
-            //        }
-            //    }
-            //    oneOfN[maxIndex] = 1.0;
-
-            //    // place inputs and 1-of-N output values into curr row
-            //    int c = 0; // column into result[][]
-            //    for (int i = 0; i < numInput; ++i) // inputs
-            //        result[r][c++] = inputs[i];
-            //    for (int i = 0; i < numOutput; ++i) // outputs
-            //        result[r][c++] = oneOfN[i];
-            //} // each row
             return result;
         } // MakeAllData
 
-        static void SplitTrainTest(double[][] allData, double trainPct,
+        private void SplitTrainTest(double[][] allData, double trainPct,
           int seed, out double[][] trainData, out double[][] testData)
         {
             Random rnd = new Random(seed);

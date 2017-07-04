@@ -22,17 +22,24 @@ namespace BIAI_Projekt
 
     class FileReader
     {
+        //file/folder names
         const String ConfigFileName = "ConfigFile.txt";
+        const String WeightsFileName = "Weights.txt";
         const String TrainDataFolderName = "traindata";
         const String TestDataFolderName = "testdata";
 
-        public StreamReader streamReader;
+        //paths
+        String ConfigFilePath;
+        String WeightsFilePath;
+        public String TrainDataFolderPath;
+        public String TestDataFolderPath;
+
+        //variables
+        private StreamReader streamReader;
+        private StreamWriter streamWriter;
         public List<double[]> mainList;
         public List<Language> languageList;
 
-        String ConfigFilePath;
-        public String TrainDataFolderPath;
-        public String TestDataFolderPath;
 
         public FileReader()
         {
@@ -40,6 +47,7 @@ namespace BIAI_Projekt
             languageList = new List<Language>();
             var dir = Directory.GetCurrentDirectory();
             ConfigFilePath += dir + "\\data\\" + ConfigFileName;
+            WeightsFilePath += dir + "\\data\\" + WeightsFileName;
             TrainDataFolderPath += dir + "\\data\\" + TrainDataFolderName;
             TestDataFolderPath += dir + "\\data\\" + TestDataFolderName;
         }
@@ -118,6 +126,31 @@ namespace BIAI_Projekt
             }
         }
 
+        public String PrintListOfArrays(List<double[]> list)
+        {
+            String listToPrint = "";
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                listToPrint += (PrintPercentageArray(list.ElementAt(i)) + "/////////////////\n");
+            }
+            return listToPrint;
+        }
+
+        public void SaveWeights(double[] weights)
+        {
+            using (streamWriter = new StreamWriter(WeightsFilePath))
+            {
+                string weightsString = "";
+                for (int i = 0; i < weights.Length; i++)
+                {
+                    weightsString += weights[i] + ",";
+                }
+                streamWriter.WriteLine(weightsString);
+
+            }
+        }
+
         private String PrintPercentageArray(double[] array)
         {
             String arrayString = "";
@@ -146,17 +179,6 @@ namespace BIAI_Projekt
                 }
             }
             return arrayString;
-        }
-
-        public String PrintListOfArrays(List<double[]> list)
-        {
-            String listToPrint = "";
-
-            for (int i = 0; i < list.Count; i++)
-            {
-                listToPrint += (PrintPercentageArray(list.ElementAt(i)) + "/////////////////\n");
-            }
-            return listToPrint;
         }
 
         private void ConvertLanguageToTable(string languageName, double[] percentageArray)

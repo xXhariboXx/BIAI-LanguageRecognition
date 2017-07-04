@@ -40,6 +40,7 @@ namespace BIAI_Projekt
             fileReader.CreateListOfArrays(fileReader.TrainDataFolderPath);
             ResultTextBox.Text = fileReader.PrintListOfArrays(fileReader.mainList);
             neuralNetworkOperator.run(fileReader.mainList);
+            fileReader.SaveWeights(neuralNetworkOperator.Weights);
         }
     }
 }
