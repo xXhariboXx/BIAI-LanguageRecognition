@@ -8,8 +8,9 @@
         Title="MainWindow" Height="720" Width="1280">
     <Grid Margin="0,0,-340,-228">
         <Button x:Name="TrainButton" Content="Trenuj sieć" HorizontalAlignment="Left" Margin="1040,25,0,0" VerticalAlignment="Top" Width="200" Height="25" Click="TrainButton_Click"/>
-        <Button x:Name="SaveNetworkButton" Content="Zapisz sieć" HorizontalAlignment="Left" Margin="1040,75,0,0" VerticalAlignment="Top" Width="200" Height="25" Visibility="Visible" IsEnabled="False"/>
-        <Button x:Name="TestButton" Content="Testuj sieć" HorizontalAlignment="Left" Margin="1040,125,0,0" VerticalAlignment="Top" Width="200" Height="25"/>
+        <Button x:Name="LoadNetworkButton" Content="Wczytaj sieć" HorizontalAlignment="Left" Margin="1040,75,0,0" VerticalAlignment="Top" Width="200" Height="25" Click="LoadNetworkButton_Click"/>
+        <Button x:Name="SaveNetworkButton" Content="Zapisz sieć" HorizontalAlignment="Left" Margin="1040,125,0,0" VerticalAlignment="Top" Width="200" Height="25" IsEnabled="False" Click="SaveNetworkButton_Click"/>
+        <Button x:Name="TestButton" Content="Testuj sieć" HorizontalAlignment="Left" Margin="1040,174,0,0" VerticalAlignment="Top" Width="200" Height="25" IsEnabled="False" Click="TestButton_Click"/>
         <TextBox x:Name="ResultTextBox" HorizontalAlignment="Left" Height="646" Margin="26,25,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="988"/>
         <TextBox x:Name="LanguagesTextBox" HorizontalAlignment="Left" Height="446" Margin="1040,225,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="200"/>
     </Grid>

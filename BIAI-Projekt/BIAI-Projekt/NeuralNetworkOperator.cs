@@ -8,61 +8,72 @@ namespace BIAI_Projekt
 {
     class NeuralNetworkOperator
     {
+        private int inputNeuronsAmount;
+        private int hiddenNeuronsAmount;
+        private int outputNeuronsAmount;
+        private NeuralNetwork neuralNetwork;
+
         public double[] Weights { get; set; }
 
+        public NeuralNetworkOperator()
+        {
+            SetupNetwork();
+        }
 
-        public void run(List<double[]> inputVector)
+        private void SetupNetwork()
+        {
+            inputNeuronsAmount = 27;
+            hiddenNeuronsAmount = 7;
+            outputNeuronsAmount = 3;
+            neuralNetwork = new NeuralNetwork(inputNeuronsAmount, hiddenNeuronsAmount, outputNeuronsAmount);
+        }
+
+        public void SetWeights(double[] weights)
+        {
+            Weights = weights;
+            neuralNetwork.SetWeights(Weights);
+        }
+
+
+        public void Train(List<double[]> inputVector)
         {
             Console.WriteLine("\nBegin neural network back-propagation demo");
 
-            int numInput = 27; // number features
-            int numHidden = 7;
-            int numOutput = 3; // number of classes for Y
             int numRows = inputVector.Count;
             int seed = 1; // gives nice demo
 
             Console.WriteLine("\nGenerating " + numRows +
-              " artificial data items with " + numInput + " features");
-            double[][] allData = MakeAllData(numInput, numHidden, numOutput,
+              " artificial data items with " + inputNeuronsAmount + " features");
+            double[][] allData = MakeAllData(inputNeuronsAmount, hiddenNeuronsAmount, outputNeuronsAmount,
               numRows, seed, inputVector);
             Console.WriteLine("Done");
 
-            //ShowMatrix(allData, allData.Length, 2, true);
 
-            Console.WriteLine("\nCreating train (80%) and test (20%) matrices");
-            double[][] trainData;
-            double[][] testData;
-            SplitTrainTest(allData, 0.8, seed, out trainData, out testData);
-            Console.WriteLine("Done\n");
-
-            Console.WriteLine("Training data:");
-            ShowMatrix(trainData, 4, 2, true);
-            Console.WriteLine("Test data:");
-            ShowMatrix(testData, 4, 2, true);
-
-            Console.WriteLine("Creating a " + numInput + "-" + numHidden +
-              "-" + numOutput + " neural network");
-            NeuralNetwork nn = new NeuralNetwork(numInput, numHidden, numOutput);
-
-            int maxEpochs = 2000;
+            int maxEpochs = 250;
             double learnRate = 0.05;
             double momentum = 0.01;
-            Console.WriteLine("\nSetting maxEpochs = " + maxEpochs);
-            Console.WriteLine("Setting learnRate = " + learnRate.ToString("F2"));
-            Console.WriteLine("Setting momentum  = " + momentum.ToString("F2"));
 
             Console.WriteLine("\nStarting training");
-            Weights = nn.Train(trainData, maxEpochs, learnRate, momentum);
+            Weights = neuralNetwork.Train(allData, maxEpochs, learnRate, momentum);
             Console.WriteLine("Done");
             Console.WriteLine("\nFinal neural network model weights and biases:\n");
             ShowVector(Weights, 2, 10, true);
+        }
 
-            double testAcc = nn.Accuracy(testData);
+        public void Test(List<double[]> inputVector)
+        {
+            Console.WriteLine("\nBegin neural network back-propagation demo");
+
+            int numRows = inputVector.Count;
+            int seed = 1; // gives nice demo
+
+            double[][] allData = MakeAllData(inputNeuronsAmount, hiddenNeuronsAmount, outputNeuronsAmount,
+              numRows, seed, inputVector);
+
+
+            double testAcc = neuralNetwork.Accuracy(allData);
             Console.WriteLine("Final accuracy on test data     = " +
               testAcc.ToString("F4"));
-
-            Console.WriteLine("\nEnd back-propagation demo\n");
-            Console.ReadLine();
         }
 
         private void ShowMatrix(double[][] matrix, int numRows,
@@ -116,24 +127,6 @@ namespace BIAI_Projekt
         private double[][] MakeAllData(int numInput, int numHidden,
           int numOutput, int numRows, int seed, List<double[]> inputVector)
         {
-            Random rnd = new Random(seed);
-            //counting weights
-            int numWeights = (numInput * numHidden) + numHidden +
-              (numHidden * numOutput) + numOutput;
-            double[] weights = new double[numWeights]; // actually weights & biases
-            for (int i = 0; i < numWeights; ++i)
-                weights[i] = 20.0 * rnd.NextDouble() - 10.0; // [-10.0 to 10.0]
-
-            Console.WriteLine("Generating weights and biases:");
-            ShowVector(weights, 2, 10, true);
-            //end weights
-
-            //creating neural network
-            NeuralNetwork gnn = new NeuralNetwork(numInput, numHidden, numOutput); // generating NN
-            gnn.SetWeights(weights);
-            //end creating neural network
-
-
             //alocating memory
             double[][] result = new double[numRows][]; // allocate return-result
             for (int i = 0; i < numRows; ++i)
@@ -141,9 +134,9 @@ namespace BIAI_Projekt
                 result[i] = new double[numInput + numOutput]; // 1-of-N in last column
             //end of allocating
 
-            for(int i = 0; i < inputVector.Count; i++)
+            for (int i = 0; i < inputVector.Count; i++)
             {
-                for(int j = 0; j < (numInput + numOutput); j++)
+                for (int j = 0; j < (numInput + numOutput); j++)
                 {
                     result[i][j] = inputVector.ElementAt(i)[j];
                 }
@@ -180,5 +173,11 @@ namespace BIAI_Projekt
                 testData[i] = copy[i + numTrainRows];
         } // 
 
+        private void CreateData(double[][] allData, out double[][] outData, int seed)
+        {
+            Random rnd = new Random(seed);
+            outData = new double[allData.Length][];
+            outData = allData;
+        }
     }
 }

@@ -31,20 +31,20 @@ namespace BIAI_Projekt
         //paths
         String ConfigFilePath;
         String WeightsFilePath;
-        public String TrainDataFolderPath;
-        public String TestDataFolderPath;
+        public String TrainDataFolderPath { get; }
+        public String TestDataFolderPath { get; }
 
         //variables
         private StreamReader streamReader;
         private StreamWriter streamWriter;
-        public List<double[]> mainList;
-        public List<Language> languageList;
+        public List<double[]> MainList { get; }
+        public List<Language> LanguageList { get; }
 
 
         public FileReader()
         {
-            mainList = new List<double[]>();
-            languageList = new List<Language>();
+            MainList = new List<double[]>();
+            LanguageList = new List<Language>();
             var dir = Directory.GetCurrentDirectory();
             ConfigFilePath += dir + "\\data\\" + ConfigFileName;
             WeightsFilePath += dir + "\\data\\" + WeightsFileName;
@@ -65,7 +65,7 @@ namespace BIAI_Projekt
                     languageBits[0] = (int)Char.GetNumericValue(line.ElementAt(4));
                     languageBits[1] = (int)Char.GetNumericValue(line.ElementAt(5));
                     languageBits[2] = (int)Char.GetNumericValue(line.ElementAt(6));
-                    languageList.Add(new Language(languageName, languageBits));
+                    LanguageList.Add(new Language(languageName, languageBits));
                 }
             }
         }
@@ -116,7 +116,7 @@ namespace BIAI_Projekt
                                 percentageArray[i] = ((percentageArray[i]) / charAmountInFile) * 100;
                             }
                         }
-                        mainList.Add(percentageArray);
+                        MainList.Add(percentageArray);
                     }
                 }
             }
@@ -144,11 +144,32 @@ namespace BIAI_Projekt
                 string weightsString = "";
                 for (int i = 0; i < weights.Length; i++)
                 {
-                    weightsString += weights[i] + ",";
+                    streamWriter.WriteLine(weights[i]);
                 }
-                streamWriter.WriteLine(weightsString);
+                
 
             }
+        }
+
+        public double[] ReadWeights()
+        {
+            List<double> weightsList = new List<double>();
+            string weightsString;
+            using (streamReader = new StreamReader(WeightsFilePath))
+            {
+                string line;
+                while ((line = streamReader.ReadLine()) != null)
+                {
+                    weightsList.Add(Double.Parse(line));
+                }
+            }
+            double[] result = new double[weightsList.Count];
+            for(int i = 0; i < weightsList.Count; i++)
+            {
+                result[i] = weightsList.ElementAt(i);
+            }
+            return result;
+
         }
 
         private String PrintPercentageArray(double[] array)
@@ -184,7 +205,7 @@ namespace BIAI_Projekt
         private void ConvertLanguageToTable(string languageName, double[] percentageArray)
         {
             languageName = languageName.ToUpper();
-            foreach(Language language in languageList)
+            foreach(Language language in LanguageList)
             {
                 if(language.LanguageName.ToUpper().Equals(languageName))
                 {

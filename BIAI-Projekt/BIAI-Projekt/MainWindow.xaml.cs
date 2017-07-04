@@ -1,18 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.IO;
+﻿using System.Windows;
 
 namespace BIAI_Projekt
 {
@@ -31,16 +17,56 @@ namespace BIAI_Projekt
         {
             fileReader = new FileReader();
             fileReader.ReadLanguageFile();
+            DisplayLanguages();
             neuralNetworkOperator = new NeuralNetworkOperator();
         }
 
         private async void TrainButton_Click(object sender, RoutedEventArgs e)
-        {          
-            fileReader.mainList.Clear();
+        {
+            fileReader.MainList.Clear();
             fileReader.CreateListOfArrays(fileReader.TrainDataFolderPath);
-            ResultTextBox.Text = fileReader.PrintListOfArrays(fileReader.mainList);
-            neuralNetworkOperator.run(fileReader.mainList);
+            ResultTextBox.Text = fileReader.PrintListOfArrays(fileReader.MainList);
+            neuralNetworkOperator.Train(fileReader.MainList);
+            SaveNetworkButton.IsEnabled = true;
+            TestButton.IsEnabled = true;
+        }
+
+        private void SaveNetworkButton_Click(object sender, RoutedEventArgs e)
+        {
             fileReader.SaveWeights(neuralNetworkOperator.Weights);
+        }
+
+        private void DisplayLanguages()
+        {
+            string languages = "";
+            foreach(Language language in fileReader.LanguageList)
+            {
+                languages += (language.LanguageName + " " + ArrayToString(language.BitCode) + "\n");
+            }
+            LanguagesTextBox.Text = languages;
+        }
+
+        private string ArrayToString(int[] array)
+        {
+            string result = "";
+            for(int i = 0; i < array.Length; i++)
+            {
+                result += array[i];
+            }
+            return result;
+        }
+
+        private void LoadNetworkButton_Click(object sender, RoutedEventArgs e)
+        {
+            neuralNetworkOperator.SetWeights(fileReader.ReadWeights());
+            TestButton.IsEnabled = true;
+        }
+
+        private void TestButton_Click(object sender, RoutedEventArgs e)
+        {
+            fileReader.MainList.Clear();
+            fileReader.CreateListOfArrays(fileReader.TestDataFolderPath);
+            neuralNetworkOperator.Test(fileReader.MainList);
         }
     }
 }
