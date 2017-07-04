@@ -5,10 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BIAI_Projekt"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
-    <Grid>
-        <Button x:Name="buttonRun" Content="Stwórz wektory z plików .txt" HorizontalAlignment="Left" Margin="270,259,0,0" VerticalAlignment="Top" Width="181" Click="buttonRun_Click"/>
-        <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="201" Margin="59,33,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="392"/>
-
+        Title="MainWindow" Height="720" Width="1280">
+    <Grid Margin="0,0,-340,-228">
+        <Button x:Name="TrainButton" Content="Trenuj sieć" HorizontalAlignment="Left" Margin="1040,25,0,0" VerticalAlignment="Top" Width="200" Height="25" Click="TrainButton_Click"/>
+        <Button x:Name="SaveNetworkButton" Content="Zapisz sieć" HorizontalAlignment="Left" Margin="1040,75,0,0" VerticalAlignment="Top" Width="200" Height="25" Visibility="Visible" IsEnabled="False"/>
+        <Button x:Name="TestButton" Content="Testuj sieć" HorizontalAlignment="Left" Margin="1040,125,0,0" VerticalAlignment="Top" Width="200" Height="25"/>
+        <TextBox x:Name="ResultTextBox" HorizontalAlignment="Left" Height="646" Margin="26,25,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="988"/>
+        <TextBox x:Name="LanguagesTextBox" HorizontalAlignment="Left" Height="446" Margin="1040,225,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="200"/>
     </Grid>
 </Window>

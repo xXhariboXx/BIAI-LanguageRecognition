@@ -8,6 +8,8 @@ namespace BIAI_Projekt
 {
     class NeuralNetworkOperator
     {
+
+
         public void run(List<double[]> inputVector)
         {
             Console.WriteLine("\nBegin neural network back-propagation demo");
@@ -53,13 +55,6 @@ namespace BIAI_Projekt
             Console.WriteLine("Done");
             Console.WriteLine("\nFinal neural network model weights and biases:\n");
             ShowVector(weights, 2, 10, true);
-
-            //double[] y = nn.ComputeOutputs(new double[] { 1.0, 2.0, 3.0, 4.0 });
-            //ShowVector(y, 3, 3, true);
-
-            //double trainAcc = nn.Accuracy(trainData);
-            //Console.WriteLine("\nFinal accuracy on training data = " +
-            //trainAcc.ToString("F4"));
 
             double testAcc = nn.Accuracy(testData);
             Console.WriteLine("Final accuracy on test data     = " +

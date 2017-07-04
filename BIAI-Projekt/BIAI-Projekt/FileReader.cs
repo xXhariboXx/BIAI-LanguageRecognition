@@ -8,20 +8,58 @@ using System.IO;
 
 namespace BIAI_Projekt
 {
+    struct Language
+    {
+        public String LanguageName;
+        public int[] BitCode;
+
+        public Language(String languageName, int[] bitCode)
+        {
+            this.LanguageName = languageName;
+            this.BitCode = bitCode;
+        }
+    }
+
     class FileReader
     {
-        public StreamReader streamReader;
-        public String path;
-        String fileName;
+        const String ConfigFileName = "ConfigFile.txt";
+        const String TrainDataFolderName = "traindata";
+        const String TestDataFolderName = "testdata";
 
+        public StreamReader streamReader;
         public List<double[]> mainList;
+        public List<Language> languageList;
+
+        String ConfigFilePath;
+        public String TrainDataFolderPath;
+        public String TestDataFolderPath;
 
         public FileReader()
         {
             mainList = new List<double[]>();
+            languageList = new List<Language>();
             var dir = Directory.GetCurrentDirectory();
-            path += dir;
-            path += "\\data";
+            ConfigFilePath += dir + "\\data\\" + ConfigFileName;
+            TrainDataFolderPath += dir + "\\data\\" + TrainDataFolderName;
+            TestDataFolderPath += dir + "\\data\\" + TestDataFolderName;
+        }
+
+        public void ReadLanguageFile()
+        {
+            using (streamReader = new StreamReader(ConfigFilePath))
+            {
+                String line;
+                while ((line = streamReader.ReadLine()) != null)
+                {
+                    line = line.ToUpper();
+                    String languageName = line.Substring(0, 3);
+                    int[] languageBits = new int[3];
+                    languageBits[0] = (int)Char.GetNumericValue(line.ElementAt(4));
+                    languageBits[1] = (int)Char.GetNumericValue(line.ElementAt(5));
+                    languageBits[2] = (int)Char.GetNumericValue(line.ElementAt(6));
+                    languageList.Add(new Language(languageName, languageBits));
+                }
+            }
         }
 
         public void CreateListOfArrays(String path)
@@ -40,8 +78,7 @@ namespace BIAI_Projekt
                             percentageArray[i] = 0;
                         }
                         String language = currentDir.Remove(0, currentDir.Length - 3);
-                        //percentageArray[percentageArray.Length - 1] = Convert.ToDouble(language);
-                        ConvertLanguageToTable(language, percentageArray, 2);
+                        ConvertLanguageToTable(language, percentageArray);
 
                         using (streamReader = new StreamReader(currentFile))
                         {
@@ -95,7 +132,7 @@ namespace BIAI_Projekt
                 {
                     arrayString += ("jezyk [0]- " + array[i] + "\n");
                 }
-                else if(i == array.Length - 2)
+                else if (i == array.Length - 2)
                 {
                     arrayString += ("jezyk [1]- " + array[i] + "\n");
                 }
@@ -105,7 +142,7 @@ namespace BIAI_Projekt
                 }
                 else
                 {
-                    arrayString += ((char) (i + 97) + " - " + array[i] + "\n");
+                    arrayString += ((char)(i + 97) + " - " + array[i] + "\n");
                 }
             }
             return arrayString;
@@ -122,30 +159,17 @@ namespace BIAI_Projekt
             return listToPrint;
         }
 
-        public void ConvertLanguageToTable(string language, double[] percentageArray, int numberOfOutputs)
+        private void ConvertLanguageToTable(string languageName, double[] percentageArray)
         {
-            switch(language.ToUpper())
+            languageName = languageName.ToUpper();
+            foreach(Language language in languageList)
             {
-                case "POL":
-                    percentageArray[27] = 0;
-                    percentageArray[28] = 1;
-                    percentageArray[29] = 0;
-                    break;
-                case "ENG":
-                    percentageArray[27] = 1;
-                    percentageArray[28] = 0;
-                    percentageArray[29] = 0;
-                    break;
-                case "FRA":
-                    percentageArray[27] = 0;
-                    percentageArray[28] = 0;
-                    percentageArray[29] = 1;
-                    break;
-                default:
-                    percentageArray[27] = 0;
-                    percentageArray[28] = 0;
-                    percentageArray[29] = 0;
-                    break;
+                if(language.LanguageName.ToUpper().Equals(languageName))
+                {
+                    percentageArray[27] = language.BitCode[0];
+                    percentageArray[28] = language.BitCode[1];
+                    percentageArray[29] = language.BitCode[2];
+                }
             }
         }
     }

@@ -16,9 +16,6 @@ using System.IO;
 
 namespace BIAI_Projekt
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         FileReader fileReader;
@@ -33,15 +30,15 @@ namespace BIAI_Projekt
         private void Init()
         {
             fileReader = new FileReader();
+            fileReader.ReadLanguageFile();
             neuralNetworkOperator = new NeuralNetworkOperator();
         }
 
-        private async void buttonRun_Click(object sender, RoutedEventArgs e)
-        {
-            
+        private async void TrainButton_Click(object sender, RoutedEventArgs e)
+        {          
             fileReader.mainList.Clear();
-            fileReader.CreateListOfArrays(fileReader.path);
-            textBox.Text = fileReader.PrintListOfArrays(fileReader.mainList);
+            fileReader.CreateListOfArrays(fileReader.TrainDataFolderPath);
+            ResultTextBox.Text = fileReader.PrintListOfArrays(fileReader.mainList);
             neuralNetworkOperator.run(fileReader.mainList);
         }
     }
