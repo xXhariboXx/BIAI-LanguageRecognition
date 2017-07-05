@@ -66,7 +66,8 @@ namespace BIAI_Projekt
         {
             fileReader.MainList.Clear();
             fileReader.CreateListOfArrays(fileReader.TestDataFolderPath);
-            neuralNetworkOperator.Test(fileReader.MainList);
+            ResultTextBox.Clear();
+            ResultTextBox.Text = neuralNetworkOperator.Test(fileReader.MainList);
         }
     }
 }

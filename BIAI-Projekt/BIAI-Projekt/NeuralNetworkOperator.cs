@@ -60,7 +60,7 @@ namespace BIAI_Projekt
             ShowVector(Weights, 2, 10, true);
         }
 
-        public void Test(List<double[]> inputVector)
+        public string Test(List<double[]> inputVector)
         {
             Console.WriteLine("\nBegin neural network back-propagation demo");
 
@@ -72,8 +72,9 @@ namespace BIAI_Projekt
 
 
             double testAcc = neuralNetwork.Accuracy(allData);
-            Console.WriteLine("Final accuracy on test data     = " +
-              testAcc.ToString("F4"));
+            string result = "Final accuracy on test data     = " +
+              testAcc.ToString("F4");
+            return result;
         }
 
         private void ShowMatrix(double[][] matrix, int numRows,
