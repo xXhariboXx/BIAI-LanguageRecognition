@@ -24,7 +24,7 @@ namespace BIAI_Projekt
         {
             inputNeuronsAmount = 27;
             hiddenNeuronsAmount = 7;
-            outputNeuronsAmount = 3;
+            outputNeuronsAmount = 4;
             neuralNetwork = new NeuralNetwork(inputNeuronsAmount, hiddenNeuronsAmount, outputNeuronsAmount);
         }
 
@@ -49,7 +49,7 @@ namespace BIAI_Projekt
             Console.WriteLine("Done");
 
 
-            int maxEpochs = 250;
+            int maxEpochs = 1000;
             double learnRate = 0.05;
             double momentum = 0.01;
 

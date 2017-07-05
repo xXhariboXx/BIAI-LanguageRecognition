@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Globalization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -61,10 +62,11 @@ namespace BIAI_Projekt
                 {
                     line = line.ToUpper();
                     String languageName = line.Substring(0, 3);
-                    int[] languageBits = new int[3];
+                    int[] languageBits = new int[4];
                     languageBits[0] = (int)Char.GetNumericValue(line.ElementAt(4));
                     languageBits[1] = (int)Char.GetNumericValue(line.ElementAt(5));
                     languageBits[2] = (int)Char.GetNumericValue(line.ElementAt(6));
+                    languageBits[3] = (int)Char.GetNumericValue(line.ElementAt(7));
                     LanguageList.Add(new Language(languageName, languageBits));
                 }
             }
@@ -78,9 +80,12 @@ namespace BIAI_Projekt
                 foreach (string currentDir in languageFiles)
                 {
                     var txtFiles = Directory.EnumerateFiles(currentDir, "*.txt");
+                    double[] languageAveragePercentageArray = new double[27];
+                    int sumOfSources = 0;
                     foreach (string currentFile in txtFiles)
                     {
-                        double[] percentageArray = new double[30];
+                        sumOfSources++;
+                        double[] percentageArray = new double[31];
                         for (int i = 0; i < percentageArray.Length; i++)
                         {
                             percentageArray[i] = 0;
@@ -117,7 +122,16 @@ namespace BIAI_Projekt
                             }
                         }
                         MainList.Add(percentageArray);
+                        for (int i = 0; i < 27; i++)
+                        {
+                            languageAveragePercentageArray[i] += percentageArray[i];
+                        }
                     }
+                    for (int i = 0; i < 27; i++)
+                    {
+                        languageAveragePercentageArray[i] /= sumOfSources;
+                    }
+                    SaveAveragePercentageArray(languageAveragePercentageArray, currentDir);
                 }
             }
             catch (Exception e)
@@ -146,15 +160,12 @@ namespace BIAI_Projekt
                 {
                     streamWriter.WriteLine(weights[i]);
                 }
-                
-
             }
         }
 
         public double[] ReadWeights()
         {
             List<double> weightsList = new List<double>();
-            string weightsString;
             using (streamReader = new StreamReader(WeightsFilePath))
             {
                 string line;
@@ -164,12 +175,27 @@ namespace BIAI_Projekt
                 }
             }
             double[] result = new double[weightsList.Count];
-            for(int i = 0; i < weightsList.Count; i++)
+            for (int i = 0; i < weightsList.Count; i++)
             {
                 result[i] = weightsList.ElementAt(i);
             }
             return result;
 
+        }
+
+        private void SaveAveragePercentageArray(double[] percentageArray, string path)
+        {
+            using (streamWriter = new StreamWriter(path + "LanguageAverage.csv"))
+            {
+                NumberFormatInfo nfi = new NumberFormatInfo();
+                nfi.NumberDecimalSeparator = ".";
+                string result = "";
+                for(int i = 0; i < percentageArray.Length; i++)
+                {
+                    result += percentageArray[i].ToString(nfi) + ";";
+                }
+                streamWriter.WriteLine(result);
+            }
         }
 
         private String PrintPercentageArray(double[] array)
@@ -178,21 +204,25 @@ namespace BIAI_Projekt
 
             for (int i = 0; i < array.Length; i++)
             {
-                if (i == array.Length - 4)
+                if (i == array.Length - 5)
                 {
                     arrayString += ("inne - " + array[i] + "\n");
                 }
-                else if (i == array.Length - 3)
+                else if (i == array.Length - 4)
                 {
                     arrayString += ("jezyk [0]- " + array[i] + "\n");
                 }
-                else if (i == array.Length - 2)
+                else if (i == array.Length - 3)
                 {
                     arrayString += ("jezyk [1]- " + array[i] + "\n");
                 }
-                else if (i == array.Length - 1)
+                else if (i == array.Length - 2)
                 {
                     arrayString += ("jezyk [2]- " + array[i] + "\n");
+                }
+                else if (i == array.Length - 1)
+                {
+                    arrayString += ("jezyk [3]- " + array[i] + "\n");
                 }
                 else
                 {
@@ -205,13 +235,14 @@ namespace BIAI_Projekt
         private void ConvertLanguageToTable(string languageName, double[] percentageArray)
         {
             languageName = languageName.ToUpper();
-            foreach(Language language in LanguageList)
+            foreach (Language language in LanguageList)
             {
-                if(language.LanguageName.ToUpper().Equals(languageName))
+                if (language.LanguageName.ToUpper().Equals(languageName))
                 {
                     percentageArray[27] = language.BitCode[0];
                     percentageArray[28] = language.BitCode[1];
                     percentageArray[29] = language.BitCode[2];
+                    percentageArray[30] = language.BitCode[3];
                 }
             }
         }
