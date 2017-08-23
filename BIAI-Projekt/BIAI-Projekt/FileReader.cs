@@ -53,7 +53,7 @@ namespace BIAI_Projekt
             TestDataFolderPath += dir + "\\data\\" + TestDataFolderName;
         }
 
-        public void ReadLanguageFile()
+        public void ReadLanguagesConfigFile()
         {
             using (streamReader = new StreamReader(ConfigFilePath))
             {
@@ -62,11 +62,12 @@ namespace BIAI_Projekt
                 {
                     line = line.ToUpper();
                     String languageName = line.Substring(0, 3);
-                    int[] languageBits = new int[4];
+                    int[] languageBits = new int[5];
                     languageBits[0] = (int)Char.GetNumericValue(line.ElementAt(4));
                     languageBits[1] = (int)Char.GetNumericValue(line.ElementAt(5));
                     languageBits[2] = (int)Char.GetNumericValue(line.ElementAt(6));
                     languageBits[3] = (int)Char.GetNumericValue(line.ElementAt(7));
+                    languageBits[4] = (int)Char.GetNumericValue(line.ElementAt(8));
                     LanguageList.Add(new Language(languageName, languageBits));
                 }
             }
@@ -77,61 +78,64 @@ namespace BIAI_Projekt
             try
             {
                 var languageFiles = Directory.EnumerateDirectories(path);
-                foreach (string currentDir in languageFiles)
+                foreach (String currentDir in languageFiles)
                 {
-                    var txtFiles = Directory.EnumerateFiles(currentDir, "*.txt");
-                    double[] languageAveragePercentageArray = new double[27];
-                    int sumOfSources = 0;
-                    foreach (string currentFile in txtFiles)
+                    if (CheckLanguage(currentDir))
                     {
-                        sumOfSources++;
-                        double[] percentageArray = new double[31];
-                        for (int i = 0; i < percentageArray.Length; i++)
+                        var txtFiles = Directory.EnumerateFiles(currentDir, "*.txt");
+                        int sumOfSources = 0;
+                        double[] languageAveragePercentageArray = new double[27];
+                        foreach (String currentFile in txtFiles)
                         {
-                            percentageArray[i] = 0;
-                        }
-                        String language = currentDir.Remove(0, currentDir.Length - 3);
-                        ConvertLanguageToTable(language, percentageArray);
-
-                        using (streamReader = new StreamReader(currentFile))
-                        {
-                            String line;
-                            int charAmountInFile = 0;
-                            while ((line = streamReader.ReadLine()) != null)
+                            sumOfSources++;
+                            double[] percentageArray = new double[32];
+                            for (int i = 0; i < percentageArray.Length; i++)
                             {
-                                line = line.ToLower();
-                                foreach (char c in line)
-                                {
+                                percentageArray[i] = 0;
+                            }
+                            String language = currentDir.Remove(0, currentDir.Length - 3);
+                            ConvertLanguageToTable(language, percentageArray);
 
-                                    if ((c >= 97) && (c <= 122))
+                            using (streamReader = new StreamReader(currentFile))
+                            {
+                                String line;
+                                int charAmountInFile = 0;
+                                while ((line = streamReader.ReadLine()) != null)
+                                {
+                                    line = line.ToLower();
+                                    foreach (char c in line)
                                     {
-                                        int i = c - 97;
-                                        percentageArray[i]++;
-                                        charAmountInFile++;
-                                    }
-                                    else if (c > 127)
-                                    {
-                                        percentageArray[26]++;
-                                        charAmountInFile++;
+
+                                        if ((c >= 97) && (c <= 122))
+                                        {
+                                            int i = c - 97;
+                                            percentageArray[i]++;
+                                            charAmountInFile++;
+                                        }
+                                        else if (c > 127)
+                                        {
+                                            percentageArray[26]++;
+                                            charAmountInFile++;
+                                        }
                                     }
                                 }
+                                for (int i = 0; i < percentageArray.Length - 4; i++)
+                                {
+                                    percentageArray[i] = ((percentageArray[i]) / charAmountInFile) * 100;
+                                }
                             }
-                            for (int i = 0; i < percentageArray.Length - 3; i++)
+                            MainList.Add(percentageArray);
+                            for (int i = 0; i < 27; i++)
                             {
-                                percentageArray[i] = ((percentageArray[i]) / charAmountInFile) * 100;
+                                languageAveragePercentageArray[i] += percentageArray[i];
                             }
                         }
-                        MainList.Add(percentageArray);
                         for (int i = 0; i < 27; i++)
                         {
-                            languageAveragePercentageArray[i] += percentageArray[i];
+                            languageAveragePercentageArray[i] /= sumOfSources;
                         }
+                        SaveAveragePercentageArray(languageAveragePercentageArray, currentDir);
                     }
-                    for (int i = 0; i < 27; i++)
-                    {
-                        languageAveragePercentageArray[i] /= sumOfSources;
-                    }
-                    SaveAveragePercentageArray(languageAveragePercentageArray, currentDir);
                 }
             }
             catch (Exception e)
@@ -155,7 +159,7 @@ namespace BIAI_Projekt
         {
             using (streamWriter = new StreamWriter(WeightsFilePath))
             {
-                string weightsString = "";
+                String weightsString = "";
                 for (int i = 0; i < weights.Length; i++)
                 {
                     streamWriter.WriteLine(weights[i]);
@@ -168,7 +172,7 @@ namespace BIAI_Projekt
             List<double> weightsList = new List<double>();
             using (streamReader = new StreamReader(WeightsFilePath))
             {
-                string line;
+                String line;
                 while ((line = streamReader.ReadLine()) != null)
                 {
                     weightsList.Add(Double.Parse(line));
@@ -183,14 +187,54 @@ namespace BIAI_Projekt
 
         }
 
-        private void SaveAveragePercentageArray(double[] percentageArray, string path)
+        public double[] ReadFile(String file)
+        {
+            double[] percentageArray = new double[27];
+            for (int i = 0; i < percentageArray.Length; i++)
+            {
+                percentageArray[i] = 0;
+            }
+
+            using (streamReader = new StreamReader(file))
+            {
+                String line;
+                int charAmountInFile = 0;
+                while ((line = streamReader.ReadLine()) != null)
+                {
+                    line = line.ToLower();
+                    foreach (char c in line)
+                    {
+
+                        if ((c >= 97) && (c <= 122))
+                        {
+                            int i = c - 97;
+                            percentageArray[i]++;
+                            charAmountInFile++;
+                        }
+                        else if (c > 127)
+                        {
+                            percentageArray[26]++;
+                            charAmountInFile++;
+                        }
+                    }
+                }
+                for (int i = 0; i < percentageArray.Length; i++)
+                {
+                    percentageArray[i] = ((percentageArray[i]) / charAmountInFile) * 100;
+                }
+            }
+
+            return percentageArray;
+        }
+
+        private void SaveAveragePercentageArray(double[] percentageArray, String path)
         {
             using (streamWriter = new StreamWriter(path + "LanguageAverage.csv"))
             {
                 NumberFormatInfo nfi = new NumberFormatInfo();
                 nfi.NumberDecimalSeparator = ".";
-                string result = "";
-                for(int i = 0; i < percentageArray.Length; i++)
+                String result = "";
+                for (int i = 0; i < percentageArray.Length; i++)
                 {
                     result += percentageArray[i].ToString(nfi) + ";";
                 }
@@ -204,25 +248,29 @@ namespace BIAI_Projekt
 
             for (int i = 0; i < array.Length; i++)
             {
-                if (i == array.Length - 5)
+                if (i == array.Length - 6)
                 {
                     arrayString += ("inne - " + array[i] + "\n");
                 }
-                else if (i == array.Length - 4)
+                else if (i == array.Length - 5)
                 {
                     arrayString += ("jezyk [0]- " + array[i] + "\n");
                 }
-                else if (i == array.Length - 3)
+                else if (i == array.Length - 4)
                 {
                     arrayString += ("jezyk [1]- " + array[i] + "\n");
                 }
-                else if (i == array.Length - 2)
+                else if (i == array.Length - 3)
                 {
                     arrayString += ("jezyk [2]- " + array[i] + "\n");
                 }
-                else if (i == array.Length - 1)
+                else if (i == array.Length - 2)
                 {
                     arrayString += ("jezyk [3]- " + array[i] + "\n");
+                }
+                else if (i == array.Length - 1)
+                {
+                    arrayString += ("jezyk [4]- " + array[i] + "\n");
                 }
                 else
                 {
@@ -232,7 +280,7 @@ namespace BIAI_Projekt
             return arrayString;
         }
 
-        private void ConvertLanguageToTable(string languageName, double[] percentageArray)
+        private void ConvertLanguageToTable(String languageName, double[] percentageArray)
         {
             languageName = languageName.ToUpper();
             foreach (Language language in LanguageList)
@@ -243,8 +291,24 @@ namespace BIAI_Projekt
                     percentageArray[28] = language.BitCode[1];
                     percentageArray[29] = language.BitCode[2];
                     percentageArray[30] = language.BitCode[3];
+                    percentageArray[31] = language.BitCode[4];
                 }
             }
+        }
+
+        private bool CheckLanguage(String dir)
+        {
+            bool isLanguageInConfig = false;
+            String language = dir.Remove(0, dir.Length - 3).ToUpper();
+            foreach (Language languageListElement in LanguageList)
+            {
+                if (languageListElement.LanguageName == language)
+                {
+                    isLanguageInConfig = true;
+                    break;
+                }
+            }
+            return isLanguageInConfig;
         }
     }
 }

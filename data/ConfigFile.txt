@@ -1,6 +1,3 @@
-pol 0001
-eng 0010
-fra 0100
-ger 1000
-cze 0010
-ita 0011
+cze 00001
+eng 00010
+pol 00100

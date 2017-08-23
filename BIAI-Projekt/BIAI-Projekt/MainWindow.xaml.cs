@@ -1,4 +1,7 @@
-﻿using System.Windows;
+﻿using Microsoft.Win32;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows;
 
 namespace BIAI_Projekt
 {
@@ -6,9 +9,11 @@ namespace BIAI_Projekt
     {
         FileReader fileReader;
         NeuralNetworkOperator neuralNetworkOperator;
+        List<Language> languageList;
 
         public MainWindow()
         {
+            //languageList = new List<Language>();
             InitializeComponent();
             Init();
         }
@@ -16,12 +21,13 @@ namespace BIAI_Projekt
         private void Init()
         {
             fileReader = new FileReader();
-            fileReader.ReadLanguageFile();
+            fileReader.ReadLanguagesConfigFile();
+            languageList = fileReader.LanguageList;
             DisplayLanguages();
             neuralNetworkOperator = new NeuralNetworkOperator();
         }
 
-        private async void TrainButton_Click(object sender, RoutedEventArgs e)
+        private void TrainButton_Click(object sender, RoutedEventArgs e)
         {
             fileReader.MainList.Clear();
             fileReader.CreateListOfArrays(fileReader.TrainDataFolderPath);
@@ -39,7 +45,7 @@ namespace BIAI_Projekt
         private void DisplayLanguages()
         {
             string languages = "";
-            foreach(Language language in fileReader.LanguageList)
+            foreach (Language language in languageList)
             {
                 languages += (language.LanguageName + " " + ArrayToString(language.BitCode) + "\n");
             }
@@ -49,7 +55,17 @@ namespace BIAI_Projekt
         private string ArrayToString(int[] array)
         {
             string result = "";
-            for(int i = 0; i < array.Length; i++)
+            for (int i = 0; i < array.Length; i++)
+            {
+                result += array[i];
+            }
+            return result;
+        }
+
+        private string ArrayToString(double[] array)
+        {
+            string result = "";
+            for (int i = 0; i < array.Length; i++)
             {
                 result += array[i];
             }
@@ -68,6 +84,50 @@ namespace BIAI_Projekt
             fileReader.CreateListOfArrays(fileReader.TestDataFolderPath);
             ResultTextBox.Clear();
             ResultTextBox.Text = neuralNetworkOperator.Test(fileReader.MainList);
+        }
+
+        private void OpenFileButton_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            double[] results = null;
+            if (openFileDialog.ShowDialog() == true)
+            {
+                double[] percentageArray = fileReader.ReadFile(openFileDialog.FileName);
+                results = neuralNetworkOperator.RecognizeLanguage(percentageArray);
+            }
+
+            if (results.Length != 0)
+            {
+                MessageBox.Show(GetLanguageName(results));
+            }
+        }
+
+        private string GetLanguageName(double[] outputVector)
+        {
+            int[] intResult = new int[outputVector.Length];
+            string languageResult = "";
+            for (int i = 0; i < outputVector.Length; i++)
+            {
+                if (outputVector[i] >= 0.8)
+                {
+                    intResult[i] = 1;
+                }
+            }
+            foreach (Language language in languageList)
+            {
+                if (language.BitCode.SequenceEqual(intResult))
+                {
+                    languageResult = language.LanguageName;
+                    break;
+                }
+            }
+
+            if (languageResult.Equals(""))
+            {
+                languageResult = "Language not reconized";
+            }
+
+            return languageResult;
         }
     }
 }

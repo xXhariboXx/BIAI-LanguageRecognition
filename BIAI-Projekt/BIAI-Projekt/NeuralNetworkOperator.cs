@@ -24,7 +24,7 @@ namespace BIAI_Projekt
         {
             inputNeuronsAmount = 27;
             hiddenNeuronsAmount = 7;
-            outputNeuronsAmount = 4;
+            outputNeuronsAmount = 5;
             neuralNetwork = new NeuralNetwork(inputNeuronsAmount, hiddenNeuronsAmount, outputNeuronsAmount);
         }
 
@@ -75,6 +75,11 @@ namespace BIAI_Projekt
             string result = "Final accuracy on test data     = " +
               testAcc.ToString("F4");
             return result;
+        }
+
+        public double[] RecognizeLanguage(double[] inputVector)
+        {
+            return neuralNetwork.ComputeOutputs(inputVector);
         }
 
         private void ShowMatrix(double[][] matrix, int numRows,
