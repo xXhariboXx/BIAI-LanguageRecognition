@@ -21,6 +21,8 @@ namespace BIAI_Projekt
         private double[] oBiases;
         private double[] outputs;
 
+        private Dictionary<double, double[]> savedWeights;
+
         private Random rnd;
 
         public NeuralNetwork(int numInput, int numHidden, int numOutput)
@@ -38,6 +40,8 @@ namespace BIAI_Projekt
             this.hoWeights = MakeMatrix(numHidden, numOutput, 0.0);
             this.oBiases = new double[numOutput];
             this.outputs = new double[numOutput];
+
+            savedWeights = new Dictionary<double, double[]>();
 
             this.rnd = new Random(0);
             this.InitializeWeights(); // all weights and biases
@@ -218,10 +222,13 @@ namespace BIAI_Projekt
 
                 if (epoch % errInterval == 0 && epoch < maxEpochs)
                 {
-                    double trainErr = Error(trainData);
+                    double trainErr = 1.0 - Accuracy(trainData);
                     Console.WriteLine("epoch = " + epoch + "  error = " +
                       trainErr.ToString("F4"));
-                    //Console.ReadLine();
+                    if (!savedWeights.ContainsKey(trainErr))
+                    {
+                        savedWeights.Add(trainErr, GetWeights());
+                    }
                 }
 
                 Shuffle(sequence); // visit each training data in random order
@@ -319,7 +326,8 @@ namespace BIAI_Projekt
                 } // each training item
 
             } // while
-            double[] bestWts = GetWeights();
+            double[] bestWts = GetBestWeights(savedWeights);
+            SetWeights(bestWts);
             return bestWts;
         } // Train
 
@@ -334,31 +342,8 @@ namespace BIAI_Projekt
             }
         } // Shuffle
 
-        private double Error(double[][] trainData)
-        {
-            // average squared error per training item
-            double sumSquaredError = 0.0;
-            double[] xValues = new double[numInput]; // first numInput values in trainData
-            double[] tValues = new double[numOutput]; // last numOutput values
-
-            // walk thru each training case. looks like (6.9 3.2 5.7 2.3) (0 0 1)
-            for (int i = 0; i < trainData.Length; ++i)
-            {
-                Array.Copy(trainData[i], xValues, numInput);
-                Array.Copy(trainData[i], numInput, tValues, 0, numOutput); // get target values
-                double[] yValues = this.ComputeOutputs(xValues); // outputs using current weights
-                for (int j = 0; j < numOutput; ++j)
-                {
-                    double err = tValues[j] - yValues[j];
-                    sumSquaredError += err * err;
-                }
-            }
-            return sumSquaredError / trainData.Length;
-        } // MeanSquaredError
-
         public double Accuracy(double[][] testData)
         {
-            // percentage correct using winner-takes all
             int numCorrect = 0;
             int numWrong = 0;
             double[] xValues = new double[numInput]; // inputs
@@ -370,31 +355,65 @@ namespace BIAI_Projekt
                 Array.Copy(testData[i], xValues, numInput); // get x-values
                 Array.Copy(testData[i], numInput, tValues, 0, numOutput); // get t-values
                 yValues = this.ComputeOutputs(xValues);
-                int maxIndex = MaxIndex(yValues); // which cell in yValues has largest value?
-                int tMaxIndex = MaxIndex(tValues);
+                double[] normalyValues = NormalizeVector(yValues);
 
-                if (maxIndex == tMaxIndex)
+                if (CompareVectors(tValues, normalyValues))
+                {
                     ++numCorrect;
+                }
                 else
+                {
                     ++numWrong;
+                }
             }
             return (numCorrect * 1.0) / (numCorrect + numWrong);
         }
 
-        private static int MaxIndex(double[] vector) // helper for Accuracy()
+        private static double[] GetBestWeights(Dictionary<double, double[]> weightsMap)
         {
-            // index of largest value
-            int bigIndex = 0;
-            double biggestVal = vector[0];
-            for (int i = 0; i < vector.Length; ++i)
+            double bestValue = weightsMap.Keys.Min();
+            double[] bestWeights = new double[weightsMap.ElementAt(1).Value.Length];
+            weightsMap.TryGetValue(bestValue, out bestWeights);
+            Console.WriteLine("Best weights at error: " + bestValue);
+            return bestWeights;
+        }
+
+        private static double[] NormalizeVector(double[] vector)
+        {
+            double[] normalizedVector = new double[vector.Length];
+
+            for (int i = 0; i < vector.Length; i++)
             {
-                if (vector[i] > biggestVal)
+                if (vector[i] >= 0.51)
                 {
-                    biggestVal = vector[i];
-                    bigIndex = i;
+                    normalizedVector[i] = 1;
                 }
             }
-            return bigIndex;
+
+            return normalizedVector;
+        }
+
+        private static bool CompareVectors(double[] testVector, double[] trainedVector)
+        {
+            bool result = false;
+
+            if (testVector.Length == trainedVector.Length)
+            {
+                for (int i = 0; i < testVector.Length; i++)
+                {
+                    if (testVector[i] == trainedVector[i])
+                    {
+                        result = true;
+                    }
+                    else
+                    {
+                        result = false;
+                        break;
+                    }
+                }
+            }
+
+            return result;
         }
     }
 }

@@ -13,7 +13,6 @@ namespace BIAI_Projekt
 
         public MainWindow()
         {
-            //languageList = new List<Language>();
             InitializeComponent();
             Init();
         }
@@ -35,6 +34,7 @@ namespace BIAI_Projekt
             neuralNetworkOperator.Train(fileReader.MainList);
             SaveNetworkButton.IsEnabled = true;
             TestButton.IsEnabled = true;
+            OpenFileButton.IsEnabled = true;
         }
 
         private void SaveNetworkButton_Click(object sender, RoutedEventArgs e)
@@ -76,6 +76,7 @@ namespace BIAI_Projekt
         {
             neuralNetworkOperator.SetWeights(fileReader.ReadWeights());
             TestButton.IsEnabled = true;
+            OpenFileButton.IsEnabled = true;
         }
 
         private void TestButton_Click(object sender, RoutedEventArgs e)
@@ -94,11 +95,11 @@ namespace BIAI_Projekt
             {
                 double[] percentageArray = fileReader.ReadFile(openFileDialog.FileName);
                 results = neuralNetworkOperator.RecognizeLanguage(percentageArray);
-            }
 
-            if (results.Length != 0)
-            {
-                MessageBox.Show(GetLanguageName(results));
+                if (results.Length != 0)
+                {
+                    MessageBox.Show(GetLanguageName(results));
+                }
             }
         }
 
@@ -125,6 +126,12 @@ namespace BIAI_Projekt
             if (languageResult.Equals(""))
             {
                 languageResult = "Language not reconized";
+            }
+
+            languageResult += "\nResult: ";
+            foreach (double resultBit in outputVector)
+            {
+                languageResult += "\n" + resultBit.ToString("N3");
             }
 
             return languageResult;

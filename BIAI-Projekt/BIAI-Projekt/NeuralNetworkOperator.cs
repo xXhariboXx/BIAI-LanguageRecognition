@@ -37,16 +37,11 @@ namespace BIAI_Projekt
 
         public void Train(List<double[]> inputVector)
         {
-            Console.WriteLine("\nBegin neural network back-propagation demo");
-
             int numRows = inputVector.Count;
-            int seed = 1; // gives nice demo
+            int seed = 1;
 
-            Console.WriteLine("\nGenerating " + numRows +
-              " artificial data items with " + inputNeuronsAmount + " features");
             double[][] allData = MakeAllData(inputNeuronsAmount, hiddenNeuronsAmount, outputNeuronsAmount,
               numRows, seed, inputVector);
-            Console.WriteLine("Done");
 
 
             int maxEpochs = 1000;
@@ -62,7 +57,6 @@ namespace BIAI_Projekt
 
         public string Test(List<double[]> inputVector)
         {
-            Console.WriteLine("\nBegin neural network back-propagation demo");
 
             int numRows = inputVector.Count;
             int seed = 1; // gives nice demo

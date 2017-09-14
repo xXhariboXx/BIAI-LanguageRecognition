@@ -9,6 +9,7 @@ using System.IO;
 
 namespace BIAI_Projekt
 {
+    //Struckt to contain language data - language name and language bitcode
     struct Language
     {
         public String LanguageName;
@@ -21,9 +22,10 @@ namespace BIAI_Projekt
         }
     }
 
+    //Class to read files and process data from files
     class FileReader
     {
-        //file/folder names
+        //files/folders names
         const String ConfigFileName = "ConfigFile.txt";
         const String WeightsFileName = "Weights.txt";
         const String TrainDataFolderName = "traindata";
@@ -53,6 +55,7 @@ namespace BIAI_Projekt
             TestDataFolderPath += dir + "\\data\\" + TestDataFolderName;
         }
 
+        //Reads config file and creates data about supported languages
         public void ReadLanguagesConfigFile()
         {
             using (streamReader = new StreamReader(ConfigFilePath))
@@ -73,6 +76,7 @@ namespace BIAI_Projekt
             }
         }
 
+        //Creates language statistics of all currently supporeted languages
         public void CreateListOfArrays(String path)
         {
             try
@@ -119,7 +123,7 @@ namespace BIAI_Projekt
                                         }
                                     }
                                 }
-                                for (int i = 0; i < percentageArray.Length - 4; i++)
+                                for (int i = 0; i < percentageArray.Length - 5; i++)
                                 {
                                     percentageArray[i] = ((percentageArray[i]) / charAmountInFile) * 100;
                                 }
@@ -144,6 +148,7 @@ namespace BIAI_Projekt
             }
         }
 
+        //Converts list all language statistics data to farmat char - percentage 
         public String PrintListOfArrays(List<double[]> list)
         {
             String listToPrint = "";
@@ -155,6 +160,7 @@ namespace BIAI_Projekt
             return listToPrint;
         }
 
+        //Saves weights from current neural network to file
         public void SaveWeights(double[] weights)
         {
             using (streamWriter = new StreamWriter(WeightsFilePath))
@@ -167,6 +173,7 @@ namespace BIAI_Projekt
             }
         }
 
+        //Reads weights from weights file
         public double[] ReadWeights()
         {
             List<double> weightsList = new List<double>();
@@ -187,6 +194,7 @@ namespace BIAI_Projekt
 
         }
 
+        //Creates language statistics from one choosen file
         public double[] ReadFile(String file)
         {
             double[] percentageArray = new double[27];
@@ -227,6 +235,7 @@ namespace BIAI_Projekt
             return percentageArray;
         }
 
+        //Saves language statistics to .csv file
         private void SaveAveragePercentageArray(double[] percentageArray, String path)
         {
             using (streamWriter = new StreamWriter(path + "LanguageAverage.csv"))
@@ -242,6 +251,7 @@ namespace BIAI_Projekt
             }
         }
 
+        //Converts one vector to print to format
         private String PrintPercentageArray(double[] array)
         {
             String arrayString = "";
@@ -280,6 +290,7 @@ namespace BIAI_Projekt
             return arrayString;
         }
 
+        //Converts language from name to bit code and inserts it to data vector
         private void ConvertLanguageToTable(String languageName, double[] percentageArray)
         {
             languageName = languageName.ToUpper();
@@ -296,6 +307,7 @@ namespace BIAI_Projekt
             }
         }
 
+        //Checks if folder contains supported language files
         private bool CheckLanguage(String dir)
         {
             bool isLanguageInConfig = false;
