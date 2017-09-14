@@ -10,6 +10,7 @@ namespace BIAI_Projekt
         FileReader fileReader;
         NeuralNetworkOperator neuralNetworkOperator;
         List<Language> languageList;
+        double roundingFactor = 0.7;
 
         public MainWindow()
         {
@@ -23,7 +24,7 @@ namespace BIAI_Projekt
             fileReader.ReadLanguagesConfigFile();
             languageList = fileReader.LanguageList;
             DisplayLanguages();
-            neuralNetworkOperator = new NeuralNetworkOperator();
+            neuralNetworkOperator = new NeuralNetworkOperator(roundingFactor);
         }
 
         private void TrainButton_Click(object sender, RoutedEventArgs e)
@@ -109,7 +110,7 @@ namespace BIAI_Projekt
             string languageResult = "";
             for (int i = 0; i < outputVector.Length; i++)
             {
-                if (outputVector[i] >= 0.8)
+                if (outputVector[i] >= roundingFactor)
                 {
                     intResult[i] = 1;
                 }

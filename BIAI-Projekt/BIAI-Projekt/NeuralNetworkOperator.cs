@@ -14,9 +14,17 @@ namespace BIAI_Projekt
         private NeuralNetwork neuralNetwork;
 
         public double[] Weights { get; set; }
+        public double RoundingFactor { get; set; }
 
         public NeuralNetworkOperator()
         {
+            RoundingFactor = 0.8;
+            SetupNetwork();
+        }
+
+        public NeuralNetworkOperator(double roundingFactor)
+        {
+            RoundingFactor = roundingFactor;
             SetupNetwork();
         }
 
@@ -25,7 +33,7 @@ namespace BIAI_Projekt
             inputNeuronsAmount = 27;
             hiddenNeuronsAmount = 7;
             outputNeuronsAmount = 5;
-            neuralNetwork = new NeuralNetwork(inputNeuronsAmount, hiddenNeuronsAmount, outputNeuronsAmount);
+            neuralNetwork = new NeuralNetwork(inputNeuronsAmount, hiddenNeuronsAmount, outputNeuronsAmount, RoundingFactor);
         }
 
         public void SetWeights(double[] weights)

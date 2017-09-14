@@ -22,10 +22,11 @@ namespace BIAI_Projekt
         private double[] outputs;
 
         private Dictionary<double, double[]> savedWeights;
+        private double roundingFactor;
 
         private Random rnd;
 
-        public NeuralNetwork(int numInput, int numHidden, int numOutput)
+        public NeuralNetwork(int numInput, int numHidden, int numOutput, double roundingFactor)
         {
             this.numInput = numInput;
             this.numHidden = numHidden;
@@ -41,13 +42,14 @@ namespace BIAI_Projekt
             this.oBiases = new double[numOutput];
             this.outputs = new double[numOutput];
 
-            savedWeights = new Dictionary<double, double[]>();
+            this.savedWeights = new Dictionary<double, double[]>();
+            this.roundingFactor = roundingFactor;
 
             this.rnd = new Random(0);
             this.InitializeWeights(); // all weights and biases
         } // ctor
 
-        private static double[][] MakeMatrix(int rows,
+        private double[][] MakeMatrix(int rows,
           int cols, double v) // helper for ctor, Train
         {
             double[][] result = new double[rows][];
@@ -59,7 +61,7 @@ namespace BIAI_Projekt
             return result;
         }
 
-        private static double[][] MakeMatrixRandom(int rows,
+        private double[][] MakeMatrixRandom(int rows,
           int cols, int seed) // helper for ctor, Train
         {
             Random rnd = new Random(seed);
@@ -162,14 +164,14 @@ namespace BIAI_Projekt
             return retResult;
         }
 
-        private static double HyperTan(double x)
+        private double HyperTan(double x)
         {
             if (x < -20.0) return -1.0; // approximation is correct to 30 decimals
             else if (x > 20.0) return 1.0;
             else return Math.Tanh(x);
         }
 
-        private static double[] Softmax(double[] oSums)
+        private double[] Softmax(double[] oSums)
         {
             // does all output nodes at once so scale
             // doesn't have to be re-computed each time
@@ -369,7 +371,7 @@ namespace BIAI_Projekt
             return (numCorrect * 1.0) / (numCorrect + numWrong);
         }
 
-        private static double[] GetBestWeights(Dictionary<double, double[]> weightsMap)
+        private double[] GetBestWeights(Dictionary<double, double[]> weightsMap)
         {
             double bestValue = weightsMap.Keys.Min();
             double[] bestWeights = new double[weightsMap.ElementAt(1).Value.Length];
@@ -378,13 +380,13 @@ namespace BIAI_Projekt
             return bestWeights;
         }
 
-        private static double[] NormalizeVector(double[] vector)
+        private double[] NormalizeVector(double[] vector)
         {
             double[] normalizedVector = new double[vector.Length];
 
             for (int i = 0; i < vector.Length; i++)
             {
-                if (vector[i] >= 0.51)
+                if (vector[i] >= roundingFactor)
                 {
                     normalizedVector[i] = 1;
                 }
@@ -393,7 +395,7 @@ namespace BIAI_Projekt
             return normalizedVector;
         }
 
-        private static bool CompareVectors(double[] testVector, double[] trainedVector)
+        private bool CompareVectors(double[] testVector, double[] trainedVector)
         {
             bool result = false;
 
