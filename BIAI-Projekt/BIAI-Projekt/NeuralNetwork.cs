@@ -8,16 +8,16 @@ namespace BIAI_Projekt
 {
     public class NeuralNetwork
     {
-        private int numInput; // number input nodes
+        private int numInput;
         private int numHidden;
         private int numOutput;
 
         private double[] inputs;
-        private double[][] ihWeights; // input-hidden
+        private double[][] ihWeights;
         private double[] hBiases;
         private double[] hOutputs;
 
-        private double[][] hoWeights; // hidden-output
+        private double[][] hoWeights;
         private double[] oBiases;
         private double[] outputs;
 
@@ -46,18 +46,25 @@ namespace BIAI_Projekt
             this.roundingFactor = roundingFactor;
 
             this.rnd = new Random(0);
-            this.InitializeWeights(); // all weights and biases
-        } // ctor
+            this.InitializeWeights();
+        }
 
         private double[][] MakeMatrix(int rows,
-          int cols, double v) // helper for ctor, Train
+          int cols, double v)
         {
             double[][] result = new double[rows][];
+
             for (int r = 0; r < result.Length; ++r)
+            {
                 result[r] = new double[cols];
+            }
             for (int i = 0; i < rows; ++i)
+            {
                 for (int j = 0; j < cols; ++j)
+                {
                     result[i][j] = v;
+                }
+            }
             return result;
         }
 
